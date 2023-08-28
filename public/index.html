@@ -60,6 +60,35 @@
       const app = firebase.initializeApp(firebaseConfig);
       const analytics = firebase.analytics();
       const db = app.firestore();
+
+
+      async function storeScore(name, score) {
+        try {
+          const now = new Date();
+          const docRef = await db.collection("scoreboard_gfeb").add({
+            name: name, // 3 letters
+            score: score, // score
+            t: now.getTime(), // timestamp
+            ts: now.toISOString(), // timestamp string
+          });
+          console.log("Document written with ID: ", docRef.id);
+        } catch (e) {
+          console.error("Error adding document: ", e);
+        }
+      }
+
+      async function getScoreboard(top = 100) {
+        try {
+          const snapshot = await db
+            .collection("scoreboard_gfeb")
+            .orderBy("score", "desc")
+            .limit(top)
+            .get();
+          return snapshot.docs.map((doc) => doc.data());
+        } catch (e) {
+          console.error("Error getting documents: ", e);
+        }
+      }
     </script>
   </body>
 </html>
