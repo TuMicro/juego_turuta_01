@@ -36,15 +36,13 @@
         // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
       });
     </script>
-    <script type="module">
-      // Import the functions you need from the SDKs you need
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
-      import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-analytics.js";
-      import { getFirestore } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore-compat.js"
 
-      // TODO: Add SDKs for Firebase products that you want to use
-      // https://firebase.google.com/docs/web/setup#available-libraries
-
+    <!-- Firesbase and Firestore -->
+    <!-- We are using compat libraries to have them available globally -->
+    <script src="https://www.gstatic.com/firebasejs/10.3.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.1.0/firebase-analytics-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.3.0/firebase-firestore-compat.js"></script>
+    <script>
       // Your web app's Firebase configuration
       // For Firebase JS SDK v7.20.0 and later, measurementId is optional
       const firebaseConfig = {
@@ -59,9 +57,38 @@
       };
 
       // Initialize Firebase
-      const app = initializeApp(firebaseConfig);
-      const analytics = getAnalytics(app);
-      const db = getFirestore(app);      
+      const app = firebase.initializeApp(firebaseConfig);
+      const analytics = firebase.analytics();
+      const db = app.firestore();
+
+
+      async function storeScore(name, score) {
+        try {
+          const now = new Date();
+          const docRef = await db.collection("scoreboard_gfeb").add({
+            name: name, // 3 letters
+            score: score, // score
+            t: now.getTime(), // timestamp
+            ts: now.toISOString(), // timestamp string
+          });
+          console.log("Document written with ID: ", docRef.id);
+        } catch (e) {
+          console.error("Error adding document: ", e);
+        }
+      }
+
+      async function getScoreboard(top = 100) {
+        try {
+          const snapshot = await db
+            .collection("scoreboard_gfeb")
+            .orderBy("score", "desc")
+            .limit(top)
+            .get();
+          return snapshot.docs.map((doc) => doc.data());
+        } catch (e) {
+          console.error("Error getting documents: ", e);
+        }
+      }
     </script>
   </body>
 </html>
