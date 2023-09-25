@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en-us">
+  <link rel="stylesheet" href="style.css" />
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -9,7 +10,7 @@
   </head>
   <body>
     <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width=720 height=1560 tabindex="-1"></canvas>
+      <canvas id="unity-canvas" width=700 height=1400 tabindex="-1"></canvas>
       <div id="unity-loading-bar">
         <div id="unity-logo"></div>
         <div id="unity-progress-bar-empty">
@@ -22,7 +23,21 @@
         <div id="unity-fullscreen-button"></div>
         <div id="unity-build-title">CarRunner</div>
       </div>
+      <div id="uiexterno" class="float">
+        <form>
+          <input onkeypress="return event.charCode != 32" maxlength="3" pattern="[a-zA-Z0-9]+" class="textField fa fa-plus my-float" type="text" id="fname" name="fname" placeholder="Introduce tu nombre ..."><br>
+        </form>
+  <!--  <button type="button" onclick="alert('CONFIRMAR')" class="button fa fa-plus my-float">CONFIRMAR</button>-->
+  <!--  <button type="button" onclick="alert('PASAR')" class="button fa fa-plus my-float">PASAR</button>-->
+      </div>
     </div>
+
+    <script>
+      function getName() {
+        console.log("getName", document.getElementById("fname").value);
+        return document.getElementById("fname").value || "AAA";
+      }
+    </script>
 
     <!-- Firesbase and Firestore -->
     <!-- We are using compat libraries to have them available globally -->
@@ -48,6 +63,13 @@
       const analytics = firebase.analytics();
       const db = app.firestore();
 
+      function hideUI() {
+        document.getElementById("uiexterno").style.display = "none";
+      }
+
+      function showUI() {
+        document.getElementById("uiexterno").style.display = "block";
+      }
 
       async function storeScore(name, score) {
         try {
@@ -157,40 +179,21 @@
 
       var script = document.createElement("script");
       script.src = loaderUrl;
-      var MyGameInstance = null;
       script.onload = () => {
         createUnityInstance(canvas, config, (progress) => {
           progressBarFull.style.width = 100 * progress + "%";
-        }).then((unityInstance) => {
-          
-          loadingBar.style.display = "none";
-          fullscreenButton.onclick = () => {
-            unityInstance.SetFullscreen(1);
-          };
-          
-          MyGameInstance = unityInstance;
-
-          var res = "";
-          var score = getScoreboard(10);
-          score.then(function(result) {
-            console.log(result);
-            var json = JSON.stringify(result);
-            //var bufferSize = lengthBytesUTF8(json) + 1;
-            //var buffer = _malloc(bufferSize);
-            //stringToUTF8(json, buffer, bufferSize);
-            res = "{\"Items\":" + json + "}";
-            MyGameInstance.SendMessage('MainMenu', 'GetHighscores', res);
-          }).catch(function(err) {
-              console.log("err", err);
-          });
-        }).catch((message) => {
-          alert(message);
-        });
-      };
+              }).then((unityInstance) => {
+                loadingBar.style.display = "none";
+                fullscreenButton.onclick = () => {
+                  unityInstance.SetFullscreen(1);
+                };
+              }).catch((message) => {
+                alert(message);
+              });
+            };
 
       document.body.appendChild(script);
 
     </script>
-
   </body>
 </html>

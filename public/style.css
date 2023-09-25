@@ -1,0 +1,53 @@
+.float{
+	position:fixed;
+	width:60px;
+	bottom: 60%;
+	color:#FFF;
+	border-radius:50px;
+	text-align:center;
+	left: 21%;;
+	font-weight: bold;
+	margin-bottom: 50px;
+	z-index: 1;
+	display: none;
+}
+
+.my-float{
+	margin-top:50px;
+}
+
+.button{
+	background-color: #1d32f5; 
+	border: none;
+	color: white;
+	padding: 35px 64px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 45px;
+	z-index: 1;
+	position: relative;
+}
+
+.textField{
+	background-color: white; /* Green */
+	border: black;
+	color: black;
+	padding: 5% 1% 5% 1%;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 15px;
+	z-index: 1;
+	position: fixed;
+}
+
+.center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 200px;
+	border: none; 
+	text-decoration: none;
+	margin-top:10px;
+  }
