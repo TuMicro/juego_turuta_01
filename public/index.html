@@ -25,7 +25,7 @@
       </div>
       <div id="uiexterno" class="float">
         <form>
-          <input onkeypress="return event.charCode != 32" contenteditable="true" maxlength="12" pattern="[a-zA-Z0-9]+" class="textField fa fa-plus my-float" type="text" id="fname" name="fname" placeholder="Introduce tu nombre ..."><br>
+          <input onkeydown="nada(this)" onkeypress="return event.charCode != 32" maxlength="12" pattern="[a-zA-Z0-9]+" class="textField fa fa-plus my-float" type="text" id="fname" name="fname" placeholder="Introduce tu nombre ..."><br>
         </form>
   <!--  <button type="button" onclick="alert('CONFIRMAR')" class="button fa fa-plus my-float">CONFIRMAR</button>-->
   <!--  <button type="button" onclick="alert('PASAR')" class="button fa fa-plus my-float">PASAR</button>-->
@@ -33,6 +33,12 @@
     </div>
 
     <script>
+      function nada(ele) {
+        console.log(ele.value);
+        if(event.keyCode == 13 || event.key === 'Enter') {
+          event.preventDefault();
+        }
+      }
       function getName() {
         console.log("getName", document.getElementById("fname").value);
         return document.getElementById("fname").value || "AAA";
