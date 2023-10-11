@@ -92,13 +92,24 @@
         }
       }
 
-      async function getScoreboard(top = 100) {
+      async function getScoreboard(since = 0, top = 10) {
         try {
-          const snapshot = await db
-            .collection("scoreboard_gfeb")
-            .orderBy("score", "desc")
+          console.log("getScoreboard", since, top);
+          let scoreDoc = await db
+            .collection("scoreboard_gfeb");
+
+          if (since > 0) scoreDoc = scoreDoc.where("t", ">",since);
+            
+          snapshot = await scoreDoc.orderBy("t", "asc").orderBy("score", "desc")
             //.limit(top)//
             .get();
+          if (snapshot.empty) {
+            console.log("No matching documents.");
+            return [];
+          } else if (snapshot.docs === undefined) {
+            console.log("No docs", since, snapshot);
+            return [];
+          }
           return snapshot.docs.map((doc) => doc.data());
         } catch (e) {
           console.error("Error getting documents: ", e);
@@ -197,15 +208,35 @@
 
           MyGameInstance = unityInstance;
 
-          var res = "";
-          var score = getScoreboard(10);
-          score.then(function(result) {
-            var json = JSON.stringify(result);
-            res = "{\"Items\":" + json + "}";
-            MyGameInstance.SendMessage('MainMenu', 'GetHighscores', res);
+          //var res = "";
+          var scoreAll = getScoreboard();
+          var scoreMonth = getScoreboard(Date.now() - 30*24*60*60*1000);
+          var scoreDay = getScoreboard(Date.now() - 24*60*60*1000);
+
+          scoreAll.then(function(result) {
+            var json1 = JSON.stringify(result);
+            var res1 = "{\"Items\":" + json1 + "}";
+            MyGameInstance.SendMessage('MainMenu', 'SetAllScores', res1);
           }).catch(function(err) {
               console.log("err", err);
           });
+
+          scoreMonth.then(function(result) {
+            var json2 = JSON.stringify(result);
+            var res2 = "{\"Items\":" + json2 + "}";
+            MyGameInstance.SendMessage('MainMenu', 'SetMonthScores', res2);
+          }).catch(function(err) {
+              console.log("err", err);
+          });
+
+          scoreDay.then(function(result) {
+            var json3 = JSON.stringify(result);
+            var res3 = "{\"Items\":" + json3 + "}";
+            MyGameInstance.SendMessage('MainMenu', 'SetDayScores', res3);
+          }).catch(function(err) {
+              console.log("err", err);
+          });
+
         }).catch((message) => {
         alert(message);
         });
