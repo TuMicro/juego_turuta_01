@@ -211,6 +211,7 @@
           //var res = "";
           var scoreAll = getScoreboard();
           var scoreMonth = getScoreboard(Date.now() - 30*24*60*60*1000);
+          var scoreWeek = getScoreboard(Date.now() - 7*24*60*60*1000);
           var scoreDay = getScoreboard(Date.now() - 24*60*60*1000);
 
           scoreAll.then(function(result) {
@@ -229,10 +230,18 @@
               console.log("err", err);
           });
 
-          scoreDay.then(function(result) {
+          scoreWeek.then(function(result) {
             var json3 = JSON.stringify(result);
             var res3 = "{\"Items\":" + json3 + "}";
-            MyGameInstance.SendMessage('MainMenu', 'SetDayScores', res3);
+            MyGameInstance.SendMessage('MainMenu', 'SetWeekScores', res3);
+          }).catch(function(err) {
+              console.log("err", err);
+          });
+
+          scoreDay.then(function(result) {
+            var json4 = JSON.stringify(result);
+            var res4 = "{\"Items\":" + json4 + "}";
+            MyGameInstance.SendMessage('MainMenu', 'SetDayScores', res4);
           }).catch(function(err) {
               console.log("err", err);
           });
