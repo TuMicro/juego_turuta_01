@@ -115,6 +115,10 @@
           console.error("Error getting documents: ", e);
         }
       }
+
+      function uniqByKeepLast(a, key) {
+        return [...new Map(a.map(x => [key(x), x])).values()]
+      }
     </script>
 
     <script>
@@ -214,8 +218,8 @@
           var scoreWeek = getScoreboard(Date.now() - 7*24*60*60*1000);
           var scoreDay = getScoreboard(Date.now() - 24*60*60*1000);
 
-          scoreAll.then(function(result) {
-            var json1 = JSON.stringify(result);
+          scoreAll.then(function(result) {            
+            var json1 = JSON.stringify(uniqByKeepLast(result, it => it.name));
             var res1 = "{\"Items\":" + json1 + "}";
             MyGameInstance.SendMessage('MainMenu', 'SetAllScores', res1);
           }).catch(function(err) {
@@ -223,7 +227,7 @@
           });
 
           scoreMonth.then(function(result) {
-            var json2 = JSON.stringify(result);
+            var json2 = JSON.stringify(uniqByKeepLast(result, it => it.name));
             var res2 = "{\"Items\":" + json2 + "}";
             MyGameInstance.SendMessage('MainMenu', 'SetMonthScores', res2);
           }).catch(function(err) {
@@ -231,7 +235,7 @@
           });
 
           scoreWeek.then(function(result) {
-            var json3 = JSON.stringify(result);
+            var json3 = JSON.stringify(uniqByKeepLast(result, it => it.name));
             var res3 = "{\"Items\":" + json3 + "}";
             MyGameInstance.SendMessage('MainMenu', 'SetWeekScores', res3);
           }).catch(function(err) {
@@ -239,7 +243,7 @@
           });
 
           scoreDay.then(function(result) {
-            var json4 = JSON.stringify(result);
+            var json4 = JSON.stringify(uniqByKeepLast(result, it => it.name));
             var res4 = "{\"Items\":" + json4 + "}";
             MyGameInstance.SendMessage('MainMenu', 'SetDayScores', res4);
           }).catch(function(err) {
