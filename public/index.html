@@ -43,6 +43,14 @@
         console.log("getName", document.getElementById("fname").value);
         return document.getElementById("fname").value || "AAA";
       }
+
+      function getUid(){
+        try {
+          return (new URLSearchParams(window.location.search)).get("userId") || "";
+        } catch (error) {
+          return "error";
+        }
+      }
     </script>
 
     <!-- Firesbase and Firestore -->
@@ -66,8 +74,11 @@
 
       // Initialize Firebase
       const app = firebase.initializeApp(firebaseConfig);
-      const analytics = firebase.analytics();
+      //const analytics = firebase.analytics();
       const db = app.firestore();
+      window.analytics = firebase.analytics();
+      //window.logEvent = analytics.logEvent;
+      window.analytics.logEvent("entrar", {tiempo: Date.now()});
 
       function hideUI() {
         document.getElementById("uiexterno").style.display = "none";
@@ -85,6 +96,7 @@
             score: score, // score
             t: now.getTime(), // timestamp
             ts: now.toISOString(), // timestamp string
+            uid: getUid(), // user id
           });
           console.log("Document written with ID: ", docRef.id);
         } catch (e) {
@@ -118,6 +130,13 @@
 
       function uniqByKeepLast(a, key) {
         return [...new Map(a.map(x => [key(x), x])).values()]
+      }
+
+      function registrar(eventName, eventParams) {
+        //analytics.logEvent(eventName);
+        //console.log('logEvent', eventName);
+        window.analytics.logEvent(eventName, JSON.parse(eventParams));//JSON.parse(eventParams) {coin: 1, speed: 2, time: 3}
+        console.log("registrar", eventName, eventParams);
       }
     </script>
 
