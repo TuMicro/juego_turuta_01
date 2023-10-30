@@ -78,7 +78,7 @@
       const db = app.firestore();
       window.analytics = firebase.analytics();
       //window.logEvent = analytics.logEvent;
-      window.analytics.logEvent("entrar", {tiempo: Date.now()});
+      window.analytics.logEvent("juego_inicio", {tiempo: Date.now()});
 
       function hideUI() {
         document.getElementById("uiexterno").style.display = "none";
@@ -233,9 +233,20 @@
 
           //var res = "";
           var scoreAll = getScoreboard();
-          var scoreMonth = getScoreboard(Date.now() - 30*24*60*60*1000);
-          var scoreWeek = getScoreboard(Date.now() - 7*24*60*60*1000);
-          var scoreDay = getScoreboard(Date.now() - 24*60*60*1000);
+          //get start of the day
+          var startDay = new Date();
+          startDay.setHours(0,0,0,0);
+          var startWeek = new Date();
+          startWeek.setDate(startWeek.getDate() - startWeek.getDay() + (startWeek.getDay() == 0 ? -6:1));
+          startWeek.setHours(0,0,0,0);
+          var startMonth = new Date();
+          startMonth.setDate(1);
+          startMonth.setHours(0,0,0,0);          
+
+
+          var scoreMonth = getScoreboard(startMonth.getTime());//Date.now() - 30*24*60*60*1000
+          var scoreWeek = getScoreboard(startWeek.getTime());//Date.now() - 7*24*60*60*1000
+          var scoreDay = getScoreboard(startDay.getTime());//Date.now() - 24*60*60*1000
 
           scoreAll.then(function(result) {            
             var json1 = JSON.stringify(uniqByKeepLast(result, it => it.name));
