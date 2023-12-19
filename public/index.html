@@ -78,7 +78,7 @@
       const db = app.firestore();
       window.analytics = firebase.analytics();
       //window.logEvent = analytics.logEvent;
-      window.analytics.logEvent("juego_inicio", {tiempo: Date.now()});
+      window.analytics.logEvent("juego_inicio", {tiempo: Date.now(), upid: getUid()});
 
       function hideUI() {
         document.getElementById("uiexterno").style.display = "none";
@@ -90,8 +90,8 @@
       
       function registrar(eventName, eventParams) {
         //analytics.logEvent(eventName);
-        //console.log('logEvent', eventName);
-        let ep = JSON.parse(eventParams.replace(/([0-9]{1,})(,)([0-9]{1,})/g,"$1.$3"));
+        console.log(eventName, eventParams);
+        let ep = JSON.parse(JSON.stringify(eventParams).replace(/([0-9]{1,})(,)([0-9]{1,})/g,"$1.$3"));
         for(let key in ep) {
           ep[key] = isNaN(Number(ep[key]))? ep[key]: Number(ep[key]);
         }
@@ -234,6 +234,9 @@
           fullscreenButton.onclick = () => {
             unityInstance.SetFullscreen(1);
           };
+
+          registrar('pantalla_de_empezar', {tiempo: Date.now()});
+          console.log('pantalla_de_empezar', Date.now());
 
           MyGameInstance = unityInstance;
 
